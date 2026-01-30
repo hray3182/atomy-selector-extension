@@ -103,8 +103,4 @@ atomy-selector-extension/
 
 ## License
 
-MIT
-
-## Author
-
-Ray Hsu
+GPL-3.0
