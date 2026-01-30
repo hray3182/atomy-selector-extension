@@ -1,0 +1,170 @@
+#aza-selector-panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 400px;
+  max-height: 80vh;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  overflow: hidden;
+}
+
+#aza-selector-panel.minimized .aza-panel-body {
+  display: none;
+}
+
+#aza-selector-panel.minimized {
+  width: auto;
+}
+
+.aza-panel-header {
+  background: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: grab;
+  user-select: none;
+}
+
+.aza-panel-header span {
+  font-weight: bold;
+}
+
+.aza-panel-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.aza-panel-controls button {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.aza-panel-controls button:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.aza-panel-body {
+  padding: 10px;
+  max-height: calc(80vh - 50px);
+  overflow-y: auto;
+}
+
+.aza-option-item {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.aza-option-item:last-child {
+  margin-bottom: 0;
+}
+
+.aza-option-item.soldout {
+  opacity: 0.5;
+}
+
+.aza-option-item.soldout .aza-option-name {
+  text-decoration: line-through;
+}
+
+.aza-option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.aza-option-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.aza-option-meta {
+  font-size: 11px;
+  color: #666;
+}
+
+.aza-selector-row {
+  display: flex;
+  gap: 8px;
+}
+
+.aza-selector-input {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  background: #fff;
+  color: #333;
+}
+
+.aza-selector-input:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.aza-copy-btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.aza-copy-btn:hover {
+  background: #45a049;
+}
+
+.aza-copy-btn.copied {
+  background: #2196F3;
+}
+
+.aza-no-options,
+.aza-loading {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+}
+
+.aza-loading {
+  color: #4CAF50;
+}
+
+/* Scrollbar */
+.aza-panel-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.aza-panel-body::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+.aza-panel-body::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.aza-panel-body::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}

@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Atomy Selector",
+  "version": "1.0",
+  "description": "Extract product option selectors from Atomy Shop (KR/JP/MY) and AZA Mall",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": [
+    "https://shop.atomy.com/*",
+    "https://kr.atomy.com/*",
+    "https://jp.atomy.com/*",
+    "https://my.atomy.com/*",
+    "https://atomyaza.co.kr/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://shop.atomy.com/kr/*",
+        "https://kr.atomy.com/product/*",
+        "https://jp.atomy.com/product/*",
+        "https://my.atomy.com/product/*",
+        "https://atomyaza.co.kr/shop/view.php*",
+        "https://atomyaza.co.kr/m/shop/view.php*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Atomy Selector"
+  }
+}

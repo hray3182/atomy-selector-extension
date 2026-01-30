@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 260px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 13px;
+    }
+    h1 {
+      font-size: 16px;
+      margin: 0 0 12px;
+      color: #4CAF50;
+    }
+    p {
+      margin: 0 0 8px;
+      color: #666;
+      line-height: 1.5;
+    }
+    .sites {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .site {
+      padding: 4px 10px;
+      background: #e8f5e9;
+      color: #4CAF50;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .hint {
+      margin-top: 12px;
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #666;
+    }
+    code {
+      background: #e8f5e9;
+      padding: 2px 4px;
+      border-radius: 2px;
+      font-size: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Atomy Selector</h1>
+  <p>商品頁面自動顯示選項面板，點擊即可複製 SpecSelector。</p>
+
+  <div class="sites">
+    <span class="site">AZA Mall</span>
+    <span class="site">KR</span>
+    <span class="site">JP</span>
+    <span class="site">MY</span>
+  </div>
+
+  <div class="hint">
+    格式範例：<br>
+    單選項 <code>블루</code><br>
+    多選項 <code>블루|100(L)</code>
+  </div>
+</body>
+</html>
