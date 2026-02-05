@@ -89,28 +89,9 @@
     };
   }
 
-  function extractAtomyFirstOptions() {
-    const options = [];
-    const optionList = document.querySelector('.opt-select-box[item-area="0"] [option-role="item-option-list"] ul');
-
-    if (optionList) {
-      const items = optionList.querySelectorAll('a[option-role="option"]');
-      items.forEach(item => {
-        const txEl = item.querySelector('span.tx');
-        if (txEl) {
-          options.push(txEl.textContent.trim());
-        }
-      });
-    }
-    return options;
-  }
-
-  async function fetchAtomyOptions(goodsNo, optValNm1, apiBase) {
+  async function fetchAtomyItemStatus(goodsNo, apiBase) {
     const formData = new FormData();
     formData.append('goodsNo', goodsNo);
-    if (optValNm1) {
-      formData.append('optValNm1', optValNm1);
-    }
     formData.append('goodsTypeCd', '101');
 
     try {
@@ -119,30 +100,50 @@
         body: formData
       });
       if (!response.ok) throw new Error('API request failed');
-
-      const data = await response.json();
-      return parseAtomyApiResponse(data);
+      return await response.json();
     } catch (err) {
       console.error('[Atomy Selector] API error:', err);
-      return [];
+      return null;
     }
   }
 
-  function parseAtomyApiResponse(data) {
-    const items = [];
-    for (const itemNo in data) {
-      const item = data[itemNo];
-      items.push({
-        itemNo: itemNo,
-        opt1: item.optValNm1 || '',
-        opt2: item.optValNm2 || '',
-        stock: item.salePossQty || 0,
-        soldOut: item.goodsStatCd === '20',
-        sortSeq: item.sortSeq || 0
-      });
+  function parseAtomyItemStatus(data) {
+    if (!data) return { type: 'error', options: [] };
+
+    const items = Object.entries(data).map(([itemNo, item]) => ({
+      itemNo,
+      opt1: item.optValNm1 || '',
+      opt2: item.optValNm2 || '',
+      stock: item.salePossQty || 0,
+      soldOut: item.goodsStatCd === '20',
+      sortSeq: item.sortSeq || 0
+    })).sort((a, b) => a.sortSeq - b.sortSeq);
+
+    if (items.length === 0) {
+      return { type: 'empty', options: [] };
     }
-    items.sort((a, b) => a.sortSeq - b.sortSeq);
-    return items;
+
+    if (items.length === 1 && items[0].itemNo === '00000') {
+      return {
+        type: 'no-option',
+        options: [{
+          name: '無選項商品',
+          stock: items[0].stock,
+          soldOut: items[0].soldOut,
+          noSelector: true
+        }]
+      };
+    }
+
+    const hasOpt2 = items.some(item => item.opt2);
+    const options = items.map(item => ({
+      name: hasOpt2 ? `${item.opt1}|${item.opt2}` : item.opt1,
+      fullSelector: hasOpt2 ? `${item.opt1}|${item.opt2}` : item.opt1,
+      stock: item.stock,
+      soldOut: item.soldOut
+    }));
+
+    return { type: hasOpt2 ? 'multi-level' : 'single-level', options };
   }
 
   // ==================== Panel Creation ====================
@@ -268,75 +269,12 @@
   async function initAtomy() {
     const site = getSiteConfig();
     const product = getAtomyProductInfo();
-    const firstOptions = extractAtomyFirstOptions();
 
-    // Show loading panel
     createPanel(site, product.pid, [], true);
 
-    // No options - fetch stock info directly
-    if (firstOptions.length === 0) {
-      try {
-        const items = await fetchAtomyOptions(product.pid, null, site.apiBase);
-        if (items.length > 0 && items[0].itemNo === '00000') {
-          // Product without options, show stock only
-          createPanel(site, product.pid, [{
-            name: '無選項商品',
-            fullSelector: '',
-            stock: items[0].stock,
-            soldOut: items[0].soldOut,
-            noSelector: true
-          }]);
-        } else {
-          createPanel(site, product.pid, []);
-        }
-      } catch (err) {
-        createPanel(site, product.pid, []);
-      }
-      return;
-    }
-
-    // Fetch all options in parallel
-    const allOptions = [];
-    const requests = firstOptions.map(opt1 => fetchAtomyOptions(product.pid, opt1, site.apiBase));
-
-    try {
-      const results = await Promise.all(requests);
-
-      results.forEach((items, index) => {
-        const opt1 = firstOptions[index];
-        if (items.length > 0 && items[0].opt2) {
-          // Has second level options
-          items.forEach(item => {
-            allOptions.push({
-              name: `${opt1}|${item.opt2}`,
-              fullSelector: `${opt1}|${item.opt2}`,
-              stock: item.stock,
-              soldOut: item.soldOut
-            });
-          });
-        } else if (items.length > 0) {
-          // Single option with stock info
-          allOptions.push({
-            name: opt1,
-            fullSelector: opt1,
-            stock: items[0].stock,
-            soldOut: items[0].soldOut
-          });
-        } else {
-          // Single option without stock info
-          allOptions.push({
-            name: opt1,
-            fullSelector: opt1,
-            soldOut: false
-          });
-        }
-      });
-
-      createPanel(site, product.pid, allOptions);
-    } catch (err) {
-      console.error('[Atomy Selector] Error:', err);
-      createPanel(site, product.pid, []);
-    }
+    const data = await fetchAtomyItemStatus(product.pid, site.apiBase);
+    const result = parseAtomyItemStatus(data);
+    createPanel(site, product.pid, result.options);
   }
 
   function init() {
