@@ -50,12 +50,17 @@
       const dataValue = el.getAttribute('data-value');
       if (dataValue) {
         const parts = dataValue.split(',');
-        const fullSelector = gsId ? `${gsId}|${dataValue}` : dataValue;
+        // data-value format: name,p1,stock,price,pv,io_no — strip stock (index 2)
+        if (parts.length >= 6) {
+          parts.splice(2, 1);
+        }
+        const stableValue = parts.join(',');
+        const fullSelector = gsId ? `${gsId}|${stableValue}` : stableValue;
         
         options.push({
           index: index + 1,
           name: parts[0] || '',
-          pv: parts[4] || '',
+          pv: parts[3] || '',
           fullSelector: fullSelector,
           soldOut: false
         });
